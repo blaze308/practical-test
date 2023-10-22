@@ -4,9 +4,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const auth = async (req, res, next) => {
 	try {
-		const token = req.header("Authorization");
+		const token = req.header("token");
 
-		if (!token) return res.status(401).json({ message: "no token" });
+		if (!token)
+			return res.status(401).json({ message: "you are not authorized" });
 
 		const verified = jwt.verify(token, JWT_SECRET);
 		if (!verified) return res.status(401).json({ message: "auth failed" });
