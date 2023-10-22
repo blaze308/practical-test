@@ -84,7 +84,9 @@ const fetch_customer_info = async (req, res) => {
 			c.customer_id,
 			c.firstname,
 			c.lastname,
-			a.balance
+			a.balance,
+			c.phone_number,
+			c.city
 		FROM
 			customer c
 		JOIN
