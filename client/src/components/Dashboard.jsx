@@ -12,7 +12,7 @@ const Dashboard = () => {
 	const [customerForm, customerSetForm] = useState({
 		customer_id: "",
 	});
-	const [customers, setCustomers] = useState([]);
+	const [customer, setCustomer] = useState({});
 
 	const customerHandleChange = (e) => {
 		const { name, value } = e.target;
@@ -33,9 +33,10 @@ const Dashboard = () => {
 				{ customer_id },
 				{ headers: { token: `${token}` } }
 			);
-			// console.log(res.data[0]);
-			var data = res.data[0];
-			setCustomers(data);
+			const data = res.data[0];
+			setCustomer(data);
+
+			customerSetForm({ customer_id: "" });
 		} catch (error) {
 			console.log(error);
 		}
@@ -48,8 +49,8 @@ const Dashboard = () => {
 			<div className="bg-white rounded-md p-4 mb-4">
 				<h2 className="text-xl font-semibold mb-2">Customers</h2>
 				<form action="" onSubmit={customerHandleSubmit}>
-					<div>
-						<label htmlFor="customer_id">CustomerID</label>
+					<div className="mb-4">
+						<label htmlFor="customer_id">Customer ID</label>
 						<input
 							required
 							type="text"
@@ -57,19 +58,40 @@ const Dashboard = () => {
 							name="customer_id"
 							value={customerForm.customer_id}
 							onChange={customerHandleChange}
+							className="w-full border border-gray-300 rounded p-2"
 						/>
-						<button onClick={customerHandleSubmit}>Submit</button>
+						<button
+							onClick={customerHandleSubmit}
+							className="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+							Submit
+						</button>
 					</div>
 				</form>
 				<div>
-					{customers.customer_id}
-					{customers.firstname}
-					{customers.lastname}
-					{customers.balance}
-					{customers.phone_number}
-					{customers.city}
+					{customer && (
+						<div className="bg-gray-200 p-2 rounded mb-2">
+							<p className="font-semibold">Customer ID:</p>
+							<p>{customer.customer_id}</p>
+
+							<p className="font-semibold">First Name:</p>
+							<p>{customer.firstname}</p>
+
+							<p className="font-semibold">Last Name:</p>
+							<p>{customer.lastname}</p>
+
+							<p className="font-semibold">Balance:</p>
+							<p>{customer.balance}</p>
+
+							<p className="font-semibold">Phone Number:</p>
+							<p>{customer.phone_number}</p>
+
+							<p className="font-semibold">City:</p>
+							<p>{customer.city}</p>
+						</div>
+					)}
 				</div>
 			</div>
+
 			{/* Transactions Section */}
 			<div className="bg-white rounded-md p-4 mb-4">
 				<h2 className="text-xl font-semibold mb-2">Transactions</h2>
