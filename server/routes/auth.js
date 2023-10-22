@@ -14,6 +14,6 @@ router.post("/teller/login", login);
 router.post("/account/customer-info", auth, fetch_customer_info);
 router.post("/account/payment", auth, payment);
 router.post("/account/withdrawal", auth, withdraw);
-router.post("/account/teller-report", auth, fetch_report);
+router.get("/account/teller-report/:id", auth, fetch_report);
 
 module.exports = router;

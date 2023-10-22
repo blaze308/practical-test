@@ -59,7 +59,9 @@ const login = async (req, res) => {
 								expiresIn: "1h",
 							});
 
-							res.status(200).json({ message: "Login successful", token });
+							res
+								.status(200)
+								.json({ message: "Login successful", token, teller_id });
 						} else {
 							res.status(401).json({ message: "Invalid credentials" });
 						}
@@ -190,11 +192,11 @@ const withdraw = async (req, res) => {
 		res.status(500).json({ message: error });
 	}
 };
-const fetch_report = async (req, res) => {
-	const { teller_id } = req.body;
 
+const fetch_report = async (req, res) => {
 	try {
-		const sql = `	
+		const teller_id = req.params.id;
+		const sql = `
 		SELECT
 		t.transaction_id,
 		t.account_number,
@@ -207,21 +209,21 @@ const fetch_report = async (req, res) => {
 		teller tl ON t.teller_id = tl.teller_id
 		WHERE
 		t.teller_id = $1
-		`;
+	  `;
+
 		pool.query(sql, [teller_id], (error, results) => {
 			if (error) {
 				console.log(error);
-				res.status(500).json({ error: "Internal Server Error" });
+				res.status(500).json({ message: "Error fetching customer info" });
 			} else {
 				res.status(200).json(results.rows);
 			}
 		});
 	} catch (error) {
-		console.log({ error: error });
-		res.status(500).json({ error: "Internal Server Error" });
+		console.log(error);
+		res.status(500).json({ message: error });
 	}
 };
-
 module.exports = {
 	login,
 	fetch_report,

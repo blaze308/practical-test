@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 
@@ -73,6 +73,7 @@ const Dashboard = () => {
 				}
 			);
 			setPaymentSuccess(res.data.message);
+			hideSuccessMessage(setPaymentSuccess);
 		} catch (error) {
 			console.log(error);
 		}
@@ -109,6 +110,7 @@ const Dashboard = () => {
 				}
 			);
 			setWithdrawalSuccess(res.data.message);
+			hideSuccessMessage(setWithdrawalSuccess);
 		} catch (error) {
 			console.log(error);
 		}
@@ -117,19 +119,35 @@ const Dashboard = () => {
 	const [report, setReport] = useState([]);
 
 	const fetchReport = async () => {
-		const reportURL = `${url}/teller-report`;
+		const reportURL = `${url}/teller-report/${teller_id}`;
 
-		const res = await axios.post(
-			reportURL,
-			{ teller_id },
-			{
-				headers: {
-					token: `${token}`,
-				},
-			}
-		);
+		const res = await axios.get(reportURL, {
+			headers: {
+				token: `${token}`,
+			},
+		});
+		const data = res.data;
+		setReport(data);
+	};
 
-		console.log(res);
+	function formatTransactionDate(dateString) {
+		const options = {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+			timeZoneName: "short",
+		};
+		const date = new Date(dateString);
+		return date.toLocaleDateString("en-US", options);
+	}
+
+	const hideSuccessMessage = (func) => {
+		setTimeout(() => {
+			func();
+		}, 2000);
 	};
 
 	return (
@@ -267,6 +285,25 @@ const Dashboard = () => {
 					onClick={fetchReport}>
 					Fetch Report
 				</button>
+
+				<h2 className="text-xl font-semibold my-2">Transaction Report</h2>
+				<ul>
+					{report.map((item) => (
+						<li
+							key={item.transaction_id}
+							className="mb-4 bg-gray-200 p-2 rounded">
+							<p className="font-semibold">
+								Transaction ID: {item.transaction_id}
+							</p>
+							<p>Account Number: {item.account_number}</p>
+							<p>Transaction Type: {item.transaction_type}</p>
+							<p>Amount: {item.amount}</p>
+							<p>
+								Transaction Date: {formatTransactionDate(item.transaction_date)}
+							</p>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	);
