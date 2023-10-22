@@ -154,11 +154,11 @@ const Dashboard = () => {
 	}
 
 	return (
-		<div className="bg-gray-100 min-h-screen p-4">
+		<div className="bg-gray-100 min-h-screen p-8 auto">
 			<h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
 			<div className="bg-white rounded-md p-4 mb-4">
-				<h2 className="text-xl font-semibold mb-2">Customers</h2>
+				<h2 className="text-xl font-semibold mb-2 ">Customers</h2>
 				<form action="" onSubmit={handleCustomerSubmit}>
 					<div className="mb-4">
 						<label htmlFor="customer_id">Customer ID</label>
@@ -169,7 +169,7 @@ const Dashboard = () => {
 							name="customer_id"
 							value={customerForm.customer_id}
 							onChange={handleCustomerChange}
-							className="w-full border border-gray-300 rounded p-2"
+							className="w-52 block border border-gray-300 rounded p-2"
 						/>
 						<button
 							onClick={handleCustomerSubmit}
@@ -180,7 +180,7 @@ const Dashboard = () => {
 				</form>
 				<div>
 					{customer && (
-						<div className="bg-gray-200 p-2 rounded mb-2">
+						<div className="bg-gray-200 p-2 rounded mb-2 w-1/2">
 							<p className="font-semibold">Customer ID:</p>
 							<p>{customer.customer_id}</p>
 
@@ -217,7 +217,7 @@ const Dashboard = () => {
 								name="account_number"
 								value={paymentForm.account_number}
 								onChange={handlePaymentChange}
-								className="w-full border border-gray-300 rounded p-2"
+								className="w-52 block border border-gray-300 rounded p-2"
 							/>
 
 							<label htmlFor="amount">Amount</label>
@@ -228,7 +228,7 @@ const Dashboard = () => {
 								name="amount"
 								value={paymentForm.amount}
 								onChange={handlePaymentChange}
-								className="w-full border border-gray-300 rounded p-2"
+								className="w-52 block border border-gray-300 rounded p-2"
 							/>
 							<button
 								onClick={handlePaymentSubmit}
@@ -255,7 +255,7 @@ const Dashboard = () => {
 								name="account_number"
 								value={withdrawalForm.account_number}
 								onChange={handleWithdrawalChange}
-								className="w-full border border-gray-300 rounded p-2"
+								className="w-52 block border border-gray-300 rounded p-2"
 							/>
 
 							<label htmlFor="amount">Amount</label>
@@ -266,7 +266,7 @@ const Dashboard = () => {
 								name="amount"
 								value={withdrawalForm.amount}
 								onChange={handleWithdrawalChange}
-								className="w-full border border-gray-300 rounded p-2"
+								className="w-52 block border border-gray-300 rounded p-2"
 							/>
 							<button
 								onClick={handleWithdrawalSubmit}
@@ -289,8 +289,8 @@ const Dashboard = () => {
 					Fetch Report
 				</button>
 
-				<h2 className="text-xl font-semibold my-2">Transaction Report</h2>
-				<ul>
+				<h2 className="text-xl font-semibold my-2 ">Transaction Report</h2>
+				<ul className="w-1/2">
 					{report.map((item) => (
 						<li
 							key={item.transaction_id}
