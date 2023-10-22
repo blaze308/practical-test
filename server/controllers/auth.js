@@ -116,17 +116,17 @@ const fetch_customer_info = async (req, res) => {
 const payment = async (req, res) => {
 	try {
 		const { amount, teller_id, account_number } = req.body;
-		const time_of_deposit = Date.now();
+		// const time_of_deposit = Date.now();
 		const transaction_id = crypto.randomBytes(16).toString("hex");
 		const sql =
-			"INSERT INTO transactions (transaction_id, account_number, transaction_type, amount, transaction_date, teller_id) VALUES ($1, $2, $3, $4, $5, $6)";
+			"INSERT INTO transactions (transaction_id, account_number, transaction_type, amount, teller_id) VALUES ($1, $2, $3, $4, $5)";
 
 		const values = [
 			transaction_id,
 			account_number,
 			"deposit",
 			amount,
-			new Date(time_of_deposit),
+			// new Date(time_of_deposit),
 			teller_id,
 		];
 
@@ -156,17 +156,17 @@ const payment = async (req, res) => {
 const withdraw = async (req, res) => {
 	try {
 		const { amount, teller_id, account_number } = req.body;
-		const time_of_deposit = Date.now();
+		// const time_of_deposit = Date.now();
 		const transaction_id = crypto.randomBytes(16).toString("hex");
 		const sql =
-			"INSERT INTO transactions (transaction_id, account_number, transaction_type, amount, transaction_date, teller_id) VALUES ($1, $2, $3, $4, $5, $6)";
+			"INSERT INTO transactions (transaction_id, account_number, transaction_type, amount, teller_id) VALUES ($1, $2, $3, $4, $5)";
 
 		const values = [
 			transaction_id,
 			account_number,
 			"withdrawal",
 			amount,
-			new Date(time_of_deposit),
+			// new Date(time_of_deposit),
 			teller_id,
 		];
 
@@ -198,17 +198,20 @@ const fetch_report = async (req, res) => {
 		const teller_id = req.params.id;
 		const sql = `
 		SELECT
-		t.transaction_id,
-		t.account_number,
-		t.transaction_type,
-		t.amount,
-		t.transaction_date
+    	t.transaction_id,
+    	t.account_number,
+    	t.transaction_type,
+    	t.amount,
+    	t.transaction_date,
+    	t.transaction_time
 		FROM
-		transactions t
+    	transactions t
 		JOIN
-		teller tl ON t.teller_id = tl.teller_id
+    	teller tl ON t.teller_id = tl.teller_id
 		WHERE
-		t.teller_id = $1
+    	t.teller_id = $1
+    	AND date_trunc('day', t.transaction_date) = current_date
+    	AND EXTRACT(HOUR FROM t.transaction_time) < 18;
 	  `;
 
 		pool.query(sql, [teller_id], (error, results) => {
@@ -224,6 +227,7 @@ const fetch_report = async (req, res) => {
 		res.status(500).json({ message: error });
 	}
 };
+
 module.exports = {
 	login,
 	fetch_report,

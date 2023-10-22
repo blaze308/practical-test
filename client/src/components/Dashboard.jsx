@@ -65,7 +65,7 @@ const Dashboard = () => {
 
 			const res = await axios.post(
 				paymentURL,
-				{ amount, account_number },
+				{ amount, account_number, teller_id },
 				{
 					headers: {
 						token: `${token}`,
@@ -102,7 +102,7 @@ const Dashboard = () => {
 
 			const res = await axios.post(
 				withdrawalURL,
-				{ amount, account_number },
+				{ amount, account_number, teller_id },
 				{
 					headers: {
 						token: `${token}`,
@@ -127,6 +127,8 @@ const Dashboard = () => {
 			},
 		});
 		const data = res.data;
+
+		console.log(data);
 		setReport(data);
 	};
 
@@ -135,20 +137,21 @@ const Dashboard = () => {
 			year: "numeric",
 			month: "long",
 			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-			timeZoneName: "short",
 		};
+
 		const date = new Date(dateString);
 		return date.toLocaleDateString("en-US", options);
 	}
 
 	const hideSuccessMessage = (func) => {
 		setTimeout(() => {
-			func();
+			func("");
 		}, 2000);
 	};
+
+	function formatTransactionTime(timeString) {
+		return timeString.split(".")[0]; // Remove milliseconds
+	}
 
 	return (
 		<div className="bg-gray-100 min-h-screen p-4">
@@ -300,6 +303,9 @@ const Dashboard = () => {
 							<p>Amount: {item.amount}</p>
 							<p>
 								Transaction Date: {formatTransactionDate(item.transaction_date)}
+							</p>
+							<p>
+								Transaction Time: {formatTransactionTime(item.transaction_time)}
 							</p>
 						</li>
 					))}

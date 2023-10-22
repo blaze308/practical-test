@@ -33,7 +33,7 @@ const Auth = () => {
 			};
 
 			sendToken();
-			// console.log(token);
+			console.log(token);
 			// console.log(teller_id);
 
 			console.log("Teller login submitted", res.data);
