@@ -190,13 +190,12 @@ const withdraw = async (req, res) => {
 		res.status(500).json({ message: error });
 	}
 };
-
 const fetch_report = async (req, res) => {
-	const teller_id = req.params.teller_id;
+	const { teller_id } = req.body;
+
 	try {
 		const sql = `	
 		SELECT
-		t.teller_id,
 		t.transaction_id,
 		t.account_number,
 		t.transaction_type,
@@ -212,12 +211,14 @@ const fetch_report = async (req, res) => {
 		pool.query(sql, [teller_id], (error, results) => {
 			if (error) {
 				console.log(error);
+				res.status(500).json({ error: "Internal Server Error" });
 			} else {
-				res.status(200).json(results.fields);
+				res.status(200).json(results.rows);
 			}
 		});
 	} catch (error) {
-		console.log(error);
+		console.log({ error: error });
+		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
 

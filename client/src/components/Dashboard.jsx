@@ -9,20 +9,20 @@ const Dashboard = () => {
 
 	const url = "http://localhost:5000/auth/account";
 
-	const [customerForm, customerSetForm] = useState({
+	const [customerForm, setCustomerForm] = useState({
 		customer_id: "",
 	});
 	const [customer, setCustomer] = useState({});
 
-	const customerHandleChange = (e) => {
+	const handleCustomerChange = (e) => {
 		const { name, value } = e.target;
-		customerSetForm({
+		setCustomerForm({
 			...customerForm,
 			[name]: value,
 		});
 	};
 
-	const customerHandleSubmit = async (e) => {
+	const handleCustomerSubmit = async (e) => {
 		e.preventDefault();
 		try {
 			const { customer_id } = customerForm;
@@ -36,10 +36,100 @@ const Dashboard = () => {
 			const data = res.data[0];
 			setCustomer(data);
 
-			customerSetForm({ customer_id: "" });
+			setCustomerForm({ customer_id: "" });
 		} catch (error) {
 			console.log(error);
 		}
+	};
+
+	const [paymentForm, setPaymentForm] = useState({
+		amount: "",
+		account_number: "",
+	});
+
+	const [paymentSuccess, setPaymentSuccess] = useState("");
+
+	const handlePaymentChange = (e) => {
+		const { name, value } = e.target;
+		setPaymentForm({
+			...paymentForm,
+			[name]: value,
+		});
+	};
+
+	const handlePaymentSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const { amount, account_number } = paymentForm;
+			const paymentURL = `${url}/payment`;
+
+			const res = await axios.post(
+				paymentURL,
+				{ amount, account_number },
+				{
+					headers: {
+						token: `${token}`,
+					},
+				}
+			);
+			setPaymentSuccess(res.data.message);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const [withdrawalForm, setWithdrawalForm] = useState({
+		amount: "",
+		account_number: "",
+	});
+
+	const [withdrawalSuccess, setWithdrawalSuccess] = useState("");
+
+	const handleWithdrawalChange = (e) => {
+		const { name, value } = e.target;
+		setWithdrawalForm({
+			...withdrawalForm,
+			[name]: value,
+		});
+	};
+
+	const handleWithdrawalSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const { amount, account_number } = withdrawalForm;
+			const withdrawalURL = `${url}/withdrawal`;
+
+			const res = await axios.post(
+				withdrawalURL,
+				{ amount, account_number },
+				{
+					headers: {
+						token: `${token}`,
+					},
+				}
+			);
+			setWithdrawalSuccess(res.data.message);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const [report, setReport] = useState([]);
+
+	const fetchReport = async () => {
+		const reportURL = `${url}/teller-report`;
+
+		const res = await axios.post(
+			reportURL,
+			{ teller_id },
+			{
+				headers: {
+					token: `${token}`,
+				},
+			}
+		);
+
+		console.log(res);
 	};
 
 	return (
@@ -48,7 +138,7 @@ const Dashboard = () => {
 
 			<div className="bg-white rounded-md p-4 mb-4">
 				<h2 className="text-xl font-semibold mb-2">Customers</h2>
-				<form action="" onSubmit={customerHandleSubmit}>
+				<form action="" onSubmit={handleCustomerSubmit}>
 					<div className="mb-4">
 						<label htmlFor="customer_id">Customer ID</label>
 						<input
@@ -57,11 +147,11 @@ const Dashboard = () => {
 							id="customer_id"
 							name="customer_id"
 							value={customerForm.customer_id}
-							onChange={customerHandleChange}
+							onChange={handleCustomerChange}
 							className="w-full border border-gray-300 rounded p-2"
 						/>
 						<button
-							onClick={customerHandleSubmit}
+							onClick={handleCustomerSubmit}
 							className="bg-blue-500 text-white px-4 py-2 rounded mt-2">
 							Submit
 						</button>
@@ -92,15 +182,91 @@ const Dashboard = () => {
 				</div>
 			</div>
 
-			{/* Transactions Section */}
 			<div className="bg-white rounded-md p-4 mb-4">
-				<h2 className="text-xl font-semibold mb-2">Transactions</h2>
-				{/* Add content for displaying transaction information here */}
+				<h2 className="text-2xl underline font-semibold mb-2">Transactions</h2>
+				<div className="my-6">
+					<h1 className="text-xl mb-2">Payment:</h1>
+					<form action="" onSubmit={handlePaymentSubmit}>
+						<div className="mb-4">
+							<label htmlFor="account_number">Account Number</label>
+							<input
+								required
+								type="text"
+								id="account_number"
+								name="account_number"
+								value={paymentForm.account_number}
+								onChange={handlePaymentChange}
+								className="w-full border border-gray-300 rounded p-2"
+							/>
+
+							<label htmlFor="amount">Amount</label>
+							<input
+								required
+								type="text"
+								id="amount"
+								name="amount"
+								value={paymentForm.amount}
+								onChange={handlePaymentChange}
+								className="w-full border border-gray-300 rounded p-2"
+							/>
+							<button
+								onClick={handlePaymentSubmit}
+								className="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+								Submit
+							</button>
+						</div>
+						{paymentSuccess && (
+							<p className="text-green-500">{paymentSuccess}</p>
+						)}
+					</form>
+				</div>
+
+				{/* Widthrawal section */}
+				<div className="my-6">
+					<h1 className="text-xl mb-2">Withdrawal:</h1>
+					<form action="" onSubmit={handleWithdrawalSubmit}>
+						<div className="mb-4">
+							<label htmlFor="account_number">Account Number</label>
+							<input
+								required
+								type="text"
+								id="account_number"
+								name="account_number"
+								value={withdrawalForm.account_number}
+								onChange={handleWithdrawalChange}
+								className="w-full border border-gray-300 rounded p-2"
+							/>
+
+							<label htmlFor="amount">Amount</label>
+							<input
+								required
+								type="text"
+								id="amount"
+								name="amount"
+								value={withdrawalForm.amount}
+								onChange={handleWithdrawalChange}
+								className="w-full border border-gray-300 rounded p-2"
+							/>
+							<button
+								onClick={handleWithdrawalSubmit}
+								className="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+								Submit
+							</button>
+						</div>
+						{withdrawalSuccess && (
+							<p className="text-green-500">{withdrawalSuccess}</p>
+						)}
+					</form>
+				</div>
 			</div>
 
-			{/* Reports Section */}
 			<div className="bg-white rounded-md p-4">
 				<h2 className="text-xl font-semibold mb-2">Reports</h2>
+				<button
+					className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+					onClick={fetchReport}>
+					Fetch Report
+				</button>
 			</div>
 		</div>
 	);
